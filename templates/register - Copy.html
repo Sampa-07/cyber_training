@@ -1,0 +1,39 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold text-primary" href="{{ url_for('dashboard') }}">
+      <i class="bi bi-shield-lock me-2"></i>Cyber Training
+    </a>
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        {% if 'user_id' in session %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('password_module') }}">Password Security</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('phishing_module') }}">Phishing Awareness</a>
+          </li>
+        {% endif %}
+      </ul>
+      
+      <div class="d-flex align-items-center">
+        {% if 'user_id' in session %}
+          <span class="me-3 text-muted small">{{ session['username'] }}</span>
+          <a href="{{ url_for('logout') }}" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-box-arrow-right"></i> Logout
+          </a>
+        {% else %}
+          <a href="{{ url_for('index') }}" class="btn btn-sm btn-outline-primary me-2">Login</a>
+          <a href="{{ url_for('register') }}" class="btn btn-sm btn-primary">Register</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>

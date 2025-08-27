@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Welcome Section -->
+<div class="card p-4 mb-4 shadow-sm border-0 bg-light">
+  <div class="d-flex align-items-center">
+    <div class="flex-grow-1">
+      <h2 class="mb-1">Welcome back, {{ username }}</h2>
+      <p class="text-secondary mb-0">Continue your cybersecurity training</p>
+    </div>
+    <div class="badge bg-primary rounded-pill p-2">
+      <i class="bi bi-person-circle me-1"></i>
+      {{ username }}
+    </div>
+  </div>
+  <div class="mt-3">
+    <p class="text-muted mb-1">Overall Progress</p>
+    <div class="progress" style="height: 14px;">
+      <div class="progress-bar bg-success" style="width: {{ overall_percent }}%" 
+           role="progressbar" aria-valuenow="{{ overall_percent }}" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+    <p class="mt-2 small fw-semibold">{{ overall_percent }}% complete</p>
+  </div>
+</div>
+
+<!-- Modules -->
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="card h-100 shadow-sm border-0">
+      <div class="card-body d-flex flex-column">
+        <h5 class="card-title">
+          <i class="bi bi-key me-2"></i>Password Security
+        </h5>
+        <p class="card-text">Interactive password strength training with practical tips and exercises.</p>
+        <p><strong>Status:</strong> 
+          {% for p in progress if p['module_name'] == 'password' %}
+            {% if p['completion_status'] == 1 %}
+              <span class="text-success">Completed</span>
+            {% else %}
+              <span class="text-warning">In Progress</span>
+            {% endif %}
+          {% endfor %}
+        </p>
+        <div class="mt-auto">
+          <a href="{{ url_for('password_module') }}" class="btn btn-primary">
+            {% for p in progress if p['module_name'] == 'password' %}
+              {% if p['completion_status'] == 1 %}
+                <i class="bi bi-arrow-repeat me-2"></i>Review
+              {% else %}
+                <i class="bi bi-play me-2"></i>Start
+              {% endif %}
+            {% endfor %}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-6">
+    <div class="card h-100 shadow-sm border-0">
+      <div class="card-body d-flex flex-column">
+        <h5 class="card-title">
+          <i class="bi bi-envelope me-2"></i>Phishing Awareness
+        </h5>
+        <p class="card-text">Simulated emails and step-by-step guidance to recognize phishing attempts.</p>
+        <p><strong>Status:</strong> 
+          {% for p in progress if p['module_name'] == 'phishing' %}
+            {% if p['completion_status'] == 1 %}
+              <span class="text-success">Completed</span>
+            {% else %}
+              <span class="text-warning">In Progress</span>
+            {% endif %}
+          {% endfor %}
+        </p>
+        <div class="mt-auto">
+          <a href="{{ url_for('phishing_module') }}" class="btn btn-primary">
+            {% for p in progress if p['module_name'] == 'phishing' %}
+              {% if p['completion_status'] == 1 %}
+                <i class="bi bi-arrow-repeat me-2"></i>Review
+              {% else %}
+                <i class="bi bi-play me-2"></i>Start
+              {% endif %}
+            {% endfor %}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Achievements -->
+<div class="card mt-4 shadow-sm border-0">
+  <div class="card-body">
+    <h5 class="card-title">
+      <i class="bi bi-trophy me-2"></i>Achievements
+    </h5>
+    <div id="badgesArea" class="d-flex flex-wrap gap-2 mt-3">
+      {% set completed_count = progress|selectattr('completion_status', 'equalto', 1)|list|length %}
+      {% if completed_count > 0 %}
+        <div class="badge bg-success text-white p-2">
+          <i class="bi bi-star me-1"></i>Starter Badge
+        </div>
+      {% endif %}
+      {% for p in progress if p['module_name'] == 'password' and p['completion_status'] == 1 %}
+        <div class="badge bg-primary text-white p-2">
+          <i class="bi bi-shield-lock me-1"></i>Password Expert
+        </div>
+      {% endfor %}
+      {% for p in progress if p['module_name'] == 'phishing' and p['completion_status'] == 1 %}
+        <div class="badge bg-danger text-white p-2">
+          <i class="bi bi-envelope-x me-1"></i>Phishing Detector
+        </div>
+      {% endfor %}
+      {% if completed_count == 0 %}
+        <div class="badge bg-light text-muted border p-2">
+          <i class="bi bi-1-circle text-primary me-1"></i>First Attempt
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<footer class="text-muted small mt-4">
+  Tip: Complete modules to earn more badges and improve your cybersecurity skills.
+</footer>
+{% endblock %}

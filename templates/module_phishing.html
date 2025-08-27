@@ -1,0 +1,458 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+  .email-card {
+    transition: border-color 0.3s ease;
+    cursor: pointer;
+  }
+  .email-card:hover {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  }
+  .phishing-indicator {
+    padding-left: 1.5rem;
+    text-indent: -1.5rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Module Header -->
+<div class="card p-4 mb-4 shadow-sm border-0 bg-light">
+  <div class="d-flex align-items-center">
+    <div class="flex-grow-1">
+      <h1 class="mb-2">Phishing Awareness</h1>
+      <p class="lead text-secondary">Learn to identify malicious emails and messages</p>
+    </div>
+    <div class="badge bg-danger rounded-pill p-2">Critical</div>
+  </div>
+  <div class="progress mt-3" style="height: 6px;">
+    <div class="progress-bar bg-success" style="width: {% if module_progress['completion_status'] == 1 %}100{% else %}0{% endif %}%"></div>
+  </div>
+</div>
+
+<!-- Main Content -->
+ <!-- ===== SECTION 1: Phishing Fundamentals ===== -->
+<div class="card shadow-sm border-0 mb-4">
+  <div class="card-body">
+    <h3><i class="bi bi-shield-exclamation me-2"></i>What is Phishing?</h3>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="alert alert-danger">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          <strong>Definition:</strong> Fraudulent attempts to steal sensitive information by impersonating trusted entities.
+        </div>
+        <h5><i class="bi bi-graph-up me-2"></i>By the Numbers:</h5>
+        <ul>
+          <li>→ <strong>36%</strong> of data breaches involve phishing (Verizon 2023)</li>
+          <li>→ <strong>3.4B</strong> phishing emails sent daily (FBI Internet Crime Report)</li>
+          <li>→ <strong>74%</strong> of attacks target small businesses</li>
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <img src="https://example.com/phishing-infographic.jpg" alt="Phishing statistics infographic" class="img-fluid rounded">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SECTION 2: Phishing Types ===== -->
+<div class="card shadow-sm border-0 mb-4">
+  <div class="card-body">
+    <h3><i class="bi bi-collection me-2"></i>Common Phishing Types</h3>
+    
+    <div class="row row-cols-1 row-cols-md-3 g-4 mt-2">
+      <!-- Email Phishing -->
+      <div class="col">
+        <div class="card h-100 border-danger border-2">
+          <div class="card-body">
+            <h5><i class="bi bi-envelope me-2"></i>Email Phishing</h5>
+            <ul>
+              <li>Fake "urgent" requests</li>
+              <li>Mimics banks, IT departments</li>
+              <li>Contains malicious links</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Smishing -->
+      <div class="col">
+        <div class="card h-100 border-warning border-2">
+          <div class="card-body">
+            <h5><i class="bi bi-phone me-2"></i>Smishing (SMS)</h5>
+            <ul>
+              <li>Text messages with links</li>
+              <li>"Package delivery" scams</li>
+              <li>Fake bank alerts</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Spear Phishing -->
+      <div class="col">
+        <div class="card h-100 border-primary border-2">
+          <div class="card-body">
+            <h5><i class="bi bi-bullseye me-2"></i>Spear Phishing</h5>
+            <ul>
+              <li>Targets specific individuals</li>
+              <li>Uses personal details</li>
+              <li>Often impersonates colleagues</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SECTION 3: Real-World Examples ===== -->
+<div class="card shadow-sm border-0 mb-4">
+  <div class="card-body">
+    <h3><i class="bi bi-eye me-2"></i>Spot the Difference</h3>
+    <p>Compare real vs. phishing emails from popular services:</p>
+    
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card h-100 border-success">
+          <div class="card-header bg-success text-white">
+            <i class="bi bi-check-circle me-2"></i>Legitimate Email
+          </div>
+          <div class="card-body">
+            <p><strong>From:</strong> security@paypal.com</p>
+            <p><strong>Subject:</strong> Your monthly security summary</p>
+            <hr>
+            <p>Dear [Your Name],</p>
+            <p>Here's your monthly security activity. No action needed.</p>
+            <p><small>Sent to all customers - <a href="#">View in browser</a></small></p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-6">
+        <div class="card h-100 border-danger">
+          <div class="card-header bg-danger text-white">
+            <i class="bi bi-x-circle me-2"></i>Phishing Email
+          </div>
+          <div class="card-body">
+            <p><strong>From:</strong> security@paypa1.com</p>
+            <p><strong>Subject:</strong> URGENT: Account suspension pending</p>
+            <hr>
+            <p>Dear Customer,</p>
+            <p>Your account will be suspended unless you <a href="#">verify your identity now</a>.</p>
+            <p><small>This link expires in 2 hours</small></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ===== SECTION 4: Advanced Quiz ===== -->
+<div class="card shadow-sm border-0">
+  <div class="card-body">
+    <h3><i class="bi bi-patch-question me-2"></i>Advanced Phishing Quiz</h3>
+    <div class="alert alert-warning">
+      <i class="bi bi-exclamation-triangle me-2"></i>
+      <strong>Mandatory:</strong> Score 80% to complete this module.
+    </div>
+    
+    <form id="phishingQuiz">
+      <!-- Question 1 -->
+      <div class="mb-4 p-3 border rounded">
+        <p class="fw-bold">1. Which email element is MOST likely to indicate phishing?</p>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q1" id="q1a" value="A" required>
+          <label class="form-check-label" for="q1a">Generic greeting ("Dear user")</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q1" id="q1b" value="B">
+          <label class="form-check-label" for="q1b">Legitimate company logo</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q1" id="q1c" value="C">
+          <label class="form-check-label" for="q1c">Footer privacy policy</label>
+        </div>
+      </div>
+      
+      <!-- Question 2 (Image-Based) -->
+      <div class="mb-4 p-3 border rounded">
+        <p class="fw-bold">2. Is this a phishing attempt?</p>
+        <img src="https://example.com/suspicious-email.png" class="img-fluid mb-3 rounded border" alt="Suspicious email screenshot">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q2" id="q2a" value="A" required>
+          <label class="form-check-label" for="q2a">Yes - the sender address is suspicious</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q2" id="q2b" value="B">
+          <label class="form-check-label" for="q2b">No - it looks legitimate</label>
+        </div>
+      </div>
+      
+      <!-- Question 3 (Scenario) -->
+      <div class="mb-4 p-3 border rounded">
+        <p class="fw-bold">3. You receive a text: "Your bank account is locked. Click here to unlock: bit.ly/3xYz". What do you do?</p>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q3" id="q3a" value="A" required>
+          <label class="form-check-label" for="q3a">Click the link to check</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q3" id="q3b" value="B">
+          <label class="form-check-label" for="q3b">Contact your bank directly</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q3" id="q3c" value="C">
+          <label class="form-check-label" for="q3c">Forward it to colleagues</label>
+        </div>
+      </div>
+      
+      <button type="submit" class="btn btn-primary">Submit Quiz</button>
+    </form>
+    
+    <!-- Quiz Results -->
+    <div id="quizResults" class="mt-4 d-none">
+      <div class="alert" role="alert">
+        <h4><i class="bi bi-award me-2"></i>Score: <span id="quizScore">0</span>/3</h4>
+        <div id="quizFeedback"></div>
+        <div id="completionAlert" class="alert alert-success d-none mt-3">
+          <i class="bi bi-check-circle me-2"></i>
+          <strong>Module Complete!</strong> You may now proceed.
+        </div>
+        <div id="retryAlert" class="alert alert-danger d-none mt-3">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          Score at least 2/3 to complete. <a href="#" onclick="window.location.reload()">Try again</a>.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="card p-4 shadow-sm border-0 h-100">
+      <h3><i class="bi bi-envelope me-2"></i>Email Inspection Challenge</h3>
+      <p class="mb-4">Review these simulated emails and identify which are phishing attempts:</p>
+      
+      <!-- ===== Updated Email Inspection Section ===== -->
+<div class="card p-4 shadow-sm border-0 h-100">
+  <h3><i class="bi bi-envelope me-2"></i>Email Inspection Challenge</h3>
+  <p class="mb-4">Classify these emails by clicking <strong>Suspicious</strong> or <strong>Not Suspicious</strong>:</p>
+  
+  <!-- Email 1 (Phishing) -->
+  <div class="card mb-3 email-card" data-is-phishing="true">
+    <div class="card-header bg-light d-flex justify-content-between">
+      <div>
+        <strong>From:</strong> "Netflix Support" &lt;billing@netflx.com&gt;
+      </div>
+      <div class="text-muted small">Today, 11:30 AM</div>
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">Payment Issue Detected</h5>
+      <p class="card-text">
+        Dear Valued Customer,<br><br>
+        We couldn't process your last payment. Your subscription will be suspended unless you 
+        <a href="#">update your payment details</a> within 12 hours.
+      </p>
+      <div class="d-flex gap-2 mt-3">
+        <button class="btn btn-outline-danger classify-btn" data-verdict="suspicious">
+          <i class="bi bi-exclamation-triangle me-2"></i>Suspicious
+        </button>
+        <button class="btn btn-outline-success classify-btn" data-verdict="not-suspicious">
+          <i class="bi bi-check-circle me-2"></i>Not Suspicious
+        </button>
+      </div>
+      <div class="email-feedback mt-3 d-none"></div>
+    </div>
+  </div>
+  
+  <!-- Email 2 (Legitimate) -->
+  <div class="card mb-3 email-card" data-is-phishing="false">
+    <div class="card-header bg-light d-flex justify-content-between">
+      <div>
+        <strong>From:</strong> "GitHub" &lt;noreply@github.com&gt;
+      </div>
+      <div class="text-muted small">Today, 9:15 AM</div>
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">Your monthly security digest</h5>
+      <p class="card-text">
+        Hello developer,<br><br>
+        Here's your monthly security summary. No action required. 
+        <a href="https://github.com" class="text-decoration-underline">View full report</a>.
+      </p>
+      <div class="d-flex gap-2 mt-3">
+        <button class="btn btn-outline-danger classify-btn" data-verdict="suspicious">
+          <i class="bi bi-exclamation-triangle me-2"></i>Suspicious
+        </button>
+        <button class="btn btn-outline-success classify-btn" data-verdict="not-suspicious">
+          <i class="bi bi-check-circle me-2"></i>Not Suspicious
+        </button>
+      </div>
+      <div class="email-feedback mt-3 d-none"></div>
+    </div>
+  </div>
+  
+  <!-- Email 3 (Phishing) -->
+  <div class="card mb-3 email-card" data-is-phishing="true">
+    <div class="card-header bg-light d-flex justify-content-between">
+      <div>
+        <strong>From:</strong> "Microsoft Security" &lt;security@micr0soft.com&gt;
+      </div>
+      <div class="text-muted small">Today, 8:05 AM</div>
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">URGENT: Unusual login attempt</h5>
+      <p class="card-text">
+        Your account was accessed from Nigeria. If this wasn't you, 
+        <a href="#">verify your identity now</a> to prevent account lock.
+      </p>
+      <div class="d-flex gap-2 mt-3">
+        <button class="btn btn-outline-danger classify-btn" data-verdict="suspicious">
+          <i class="bi bi-exclamation-triangle me-2"></i>Suspicious
+        </button>
+        <button class="btn btn-outline-success classify-btn" data-verdict="not-suspicious">
+          <i class="bi bi-check-circle me-2"></i>Not Suspicious
+        </button>
+      </div>
+      <div class="email-feedback mt-3 d-none"></div>
+    </div>
+  </div>
+  
+  <!-- Progress Tracker -->
+  <div class="alert alert-info mt-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <i class="bi bi-clipboard-data me-2"></i>
+        <span id="progressText">0/3 emails classified</span>
+      </div>
+      <button id="checkAnswersBtn" class="btn btn-primary" disabled>
+        <i class="bi bi-check-circle me-2"></i>Verify Answers
+      </button>
+    </div>
+  </div>
+</div>
+  
+  <!-- Sidebar -->
+  <div class="col-lg-4">
+    <div class="card p-4 shadow-sm border-0 h-100">
+      <h4><i class="bi bi-clipboard-check me-2"></i>Red Flags</h4>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item d-flex">
+          <i class="bi bi-check-circle-fill text-success me-2 mt-1"></i>
+          <div>Suspicious sender address</div>
+        </li>
+        <li class="list-group-item d-flex">
+          <i class="bi bi-check-circle-fill text-success me-2 mt-1"></i>
+          <div>Urgent or threatening language</div>
+        </li>
+        <li class="list-group-item d-flex">
+          <i class="bi bi-check-circle-fill text-success me-2 mt-1"></i>
+          <div>Requests for sensitive information</div>
+        </li>
+        <li class="list-group-item d-flex">
+          <i class="bi bi-check-circle-fill text-success me-2 mt-1"></i>
+          <div>Generic greetings ("Dear customer")</div>
+        </li>
+        <li class="list-group-item d-flex">
+          <i class="bi bi-check-circle-fill text-success me-2 mt-1"></i>
+          <div>Links to unfamiliar websites</div>
+        </li>
+      </ul>
+      
+      <hr class="my-4">
+      
+      <h4><i class="bi bi-shield me-2"></i>Protection Tips</h4>
+      <div class="alert alert-success small">
+        <i class="bi bi-check-lg me-2"></i>Hover over links to see the real URL
+      </div>
+      <div class="alert alert-success small">
+        <i class="bi bi-check-lg me-2"></i>Contact the company directly if unsure
+      </div>
+      <div class="alert alert-success small mb-0">
+        <i class="bi bi-check-lg me-2"></i>Report suspicious emails to your IT team
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Track inspected emails
+  let inspectedEmails = [];
+  
+  // Email inspection handler
+  document.querySelectorAll('.inspect-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      const card = this.closest('.email-card');
+      const isPhishing = card.dataset.isPhishing === 'true';
+      
+      // Highlight card based on inspection
+      card.classList.remove('border-success', 'border-danger');
+      card.classList.add(isPhishing ? 'border-danger' : 'border-success');
+      
+      // Store inspection result
+      const emailId = Array.from(document.querySelectorAll('.email-card')).indexOf(card);
+      inspectedEmails[emailId] = isPhishing;
+      
+      // Show feedback
+      const feedbackDiv = document.getElementById('phishingFeedback');
+      const indicatorsDiv = document.getElementById('phishingIndicators');
+      
+      feedbackDiv.classList.remove('d-none');
+      indicatorsDiv.innerHTML = '';
+      
+      if (isPhishing) {
+        indicatorsDiv.innerHTML = `
+          <p class="phishing-indicator"><i class="bi bi-chevron-right text-danger me-1"></i>Suspicious sender address (amaz0n.com)</p>
+          <p class="phishing-indicator"><i class="bi bi-chevron-right text-danger me-1"></i>Creates false urgency ("within 24 hours")</p>
+          <p class="phishing-indicator"><i class="bi bi-chevron-right text-danger me-1"></i>Generic greeting ("Dear customer")</p>
+          <p class="phishing-indicator"><i class="bi bi-chevron-right text-danger me-1"></i>Requests immediate action with a link</p>
+        `;
+      } else {
+        indicatorsDiv.innerHTML = `
+          <p class="phishing-indicator"><i class="bi bi-chevron-right text-success me-1"></i>From a known company address</p>
+          <p class="phishing-indicator"><i class="bi bi-chevron-right text-success me-1"></i>Informational without demands</p>
+          <p class="phishing-indicator"><i class="bi bi-chevron-right text-success me-1"></i>No requests for personal information</p>
+        `;
+      }
+    });
+  });
+  
+  // Check answers
+  document.getElementById('checkAnswersBtn').addEventListener('click', function() {
+    const emailCards = document.querySelectorAll('.email-card');
+    let score = 0;
+    
+    emailCards.forEach((card, index) => {
+      const isPhishing = card.dataset.isPhishing === 'true';
+      if (inspectedEmails[index] === isPhishing) {
+        score++;
+      }
+    });
+    
+    // Update score display
+    const scoreBadge = document.getElementById('scoreBadge');
+    scoreBadge.textContent = `Score: ${score}/3`;
+    scoreBadge.className = `badge ${score === 3 ? 'bg-success' : score > 0 ? 'bg-warning' : 'bg-secondary'}`;
+    
+    // Mark module complete if perfect score
+    if (score === 3 && {{ 0 if module_progress['completion_status'] == 1 else 1 }}) {
+      fetch("{{ url_for('update_phishing_progress') }}", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          score: 100,
+          is_completed: true
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          window.location.reload();
+        }
+      });
+    }
+  });
+</script>
+{% endblock %}

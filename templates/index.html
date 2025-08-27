@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6">
+    <div class="text-center mb-5">
+      <h1 class="fw-bold text-primary">
+        <i class="bi bi-shield-lock me-2"></i>Cyber Training
+      </h1>
+      <p class="text-muted">Interactive security training for non-technical users</p>
+    </div>
+
+    <div class="card shadow-sm border-0">
+      <div class="card-body p-4">
+        <h2 class="mb-4 text-center">Sign in</h2>
+        <form method="POST" action="{{ url_for('login') }}">
+          <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input id="username" name="username" class="form-control" autocomplete="username" required>
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input id="password" name="password" type="password" class="form-control" autocomplete="current-password" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100 py-2">
+            <i class="bi bi-box-arrow-in-right me-2"></i>Sign in
+          </button>
+        </form>
+
+        <div class="d-flex justify-content-between mt-3">
+          <a href="{{ url_for('register') }}" class="small">Create account</a>
+          <a href="{{ url_for('dashboard') }}" class="small">Continue as Guest</a>
+        </div>
+      </div>
+    </div>
+
+    <footer class="text-center text-muted small mt-4">
+      Work In Progress - E005145 Samitha Akalanka
+    </footer>
+  </div>
+</div>
+{% endblock %}
