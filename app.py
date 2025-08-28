@@ -5,17 +5,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 
-# Railway-compatible configuration
-app.secret_key = os.environ.get('SECRET_KEY', 'your-fallback-secret-key-change-in-production')
+# Render-compatible configuration
+app.secret_key = os.environ.get('SECRET_KEY', 'cybersecurity-demo-key-2024-change-in-production')
 
-# Database path - Railway compatible
-if os.environ.get('RAILWAY_ENVIRONMENT'):
-    # Production on Railway
-    DATABASE_PATH = '/tmp/database.db'
-else:
-    # Local development
-    DATABASE_PATH = os.path.join(os.getcwd(), 'database.db')
-
+# Database configuration - works on Render and locally
+DATABASE_PATH = 'database.db'
 app.config['DATABASE'] = DATABASE_PATH
 
 # Database setup
@@ -71,12 +65,12 @@ def close_db(error):
     if hasattr(g, 'db'):
         g.db.close()
 
-# Initialize database on startup
+# Initialize database on first request
 @app.before_first_request
 def create_tables():
     init_db()
 
-# User authentication
+# User authentication routes
 @app.route('/')
 def index():
     if 'user_id' in session:
@@ -228,18 +222,39 @@ def check_password():
     data = request.get_json()
     password = data.get('password', '')
     
-    # Calculate password strength (basic implementation)
+    # Calculate password strength score
     strength_score = 0
+    feedback = []
+    
+    # Length check
     if len(password) >= 8:
         strength_score += 20
+    else:
+        feedback.append("Use at least 8 characters")
+    
+    # Uppercase check
     if any(c.isupper() for c in password):
         strength_score += 20
+    else:
+        feedback.append("Add uppercase letters")
+    
+    # Lowercase check
     if any(c.islower() for c in password):
         strength_score += 20
+    else:
+        feedback.append("Add lowercase letters")
+    
+    # Number check
     if any(c.isdigit() for c in password):
         strength_score += 20
+    else:
+        feedback.append("Add numbers")
+    
+    # Special character check
     if any(c in "!@#$%^&*()_+-=[]{}|;:,.<>?" for c in password):
         strength_score += 20
+    else:
+        feedback.append("Add special characters")
     
     # Store password attempt
     db = get_db()
@@ -252,10 +267,11 @@ def check_password():
     return jsonify({
         'status': 'success',
         'strength_score': strength_score,
-        'feedback': get_password_feedback(strength_score)
+        'feedback': feedback,
+        'message': get_password_message(strength_score)
     })
 
-def get_password_feedback(score):
+def get_password_message(score):
     if score >= 80:
         return "Excellent! Very strong password."
     elif score >= 60:
@@ -290,29 +306,46 @@ def update_phishing_progress():
         return jsonify({'status': 'error', 'message': 'Not authenticated'}), 401
     
     data = request.get_json()
-    db = get_db()
+    quiz_score = data.get('quiz_score', 0)
+    module_completed = data.get('module_completed', False)
     
+    db = get_db()
     db.execute(
         'UPDATE user_progress SET score = ?, completion_status = ? '
         'WHERE user_id = ? AND module_name = ?',
-        (data['score'], 1 if data['is_completed'] else 0, 
-         session['user_id'], 'phishing')
+        (quiz_score, 1 if module_completed else 0, session['user_id'], 'phishing')
     )
     db.commit()
     
     return jsonify({'status': 'success'})
 
-# Health check endpoint for Railway
+# Health check endpoint for hosting platforms
 @app.route('/health')
 def health_check():
-    return jsonify({'status': 'healthy', 'message': 'Cybersecurity Training Platform is running'})
+    return jsonify({
+        'status': 'healthy', 
+        'message': 'Cybersecurity Training Platform is running',
+        'database': 'connected' if os.path.exists(DATABASE_PATH) else 'initializing'
+    })
+
+# Error handlers
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    return render_template('500.html'), 500
 
 if __name__ == '__main__':
-    # Railway-compatible startup
+    # Get port from environment (Render sets this automatically)
     port = int(os.environ.get('PORT', 5000))
     
-    # Initialize database
-    init_db()
+    # Initialize database if it doesn't exist
+    if not os.path.exists(DATABASE_PATH):
+        init_db()
+        print("Database initialized successfully!")
     
-    # Run app
+    # Run the application
+    print(f"Starting Cybersecurity Training Platform on port {port}")
     app.run(host='0.0.0.0', port=port, debug=False)
