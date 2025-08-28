@@ -1,11 +1,22 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, g
+from flask import Flask, render_template, request, redirect, url_for, session, flash, g, jsonify
 import sqlite3
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key_here'
-app.config['DATABASE'] = os.path.join(app.instance_path, 'database.db')
+
+# Railway-compatible configuration
+app.secret_key = os.environ.get('SECRET_KEY', 'your-fallback-secret-key-change-in-production')
+
+# Database path - Railway compatible
+if os.environ.get('RAILWAY_ENVIRONMENT'):
+    # Production on Railway
+    DATABASE_PATH = '/tmp/database.db'
+else:
+    # Local development
+    DATABASE_PATH = os.path.join(os.getcwd(), 'database.db')
+
+app.config['DATABASE'] = DATABASE_PATH
 
 # Database setup
 def get_db():
@@ -59,6 +70,11 @@ def init_db():
 def close_db(error):
     if hasattr(g, 'db'):
         g.db.close()
+
+# Initialize database on startup
+@app.before_first_request
+def create_tables():
+    init_db()
 
 # User authentication
 @app.route('/')
@@ -204,6 +220,51 @@ def phishing_module():
                          module_progress=module_progress)
 
 # API endpoints for module interactions
+@app.route('/api/check_password', methods=['POST'])
+def check_password():
+    if 'user_id' not in session:
+        return jsonify({'status': 'error', 'message': 'Not authenticated'}), 401
+    
+    data = request.get_json()
+    password = data.get('password', '')
+    
+    # Calculate password strength (basic implementation)
+    strength_score = 0
+    if len(password) >= 8:
+        strength_score += 20
+    if any(c.isupper() for c in password):
+        strength_score += 20
+    if any(c.islower() for c in password):
+        strength_score += 20
+    if any(c.isdigit() for c in password):
+        strength_score += 20
+    if any(c in "!@#$%^&*()_+-=[]{}|;:,.<>?" for c in password):
+        strength_score += 20
+    
+    # Store password attempt
+    db = get_db()
+    db.execute(
+        'INSERT INTO password_history (user_id, password, strength_score) VALUES (?, ?, ?)',
+        (session['user_id'], password, strength_score)
+    )
+    db.commit()
+    
+    return jsonify({
+        'status': 'success',
+        'strength_score': strength_score,
+        'feedback': get_password_feedback(strength_score)
+    })
+
+def get_password_feedback(score):
+    if score >= 80:
+        return "Excellent! Very strong password."
+    elif score >= 60:
+        return "Good password, but could be stronger."
+    elif score >= 40:
+        return "Fair password. Add more variety."
+    else:
+        return "Weak password. Needs improvement."
+
 @app.route('/api/update_password_progress', methods=['POST'])
 def update_password_progress():
     if 'user_id' not in session:
@@ -222,23 +283,6 @@ def update_password_progress():
     db.commit()
     
     return jsonify({'status': 'success'})
-    
-    # Store password attempt
-    db.execute(
-        'INSERT INTO password_history (user_id, password, strength_score) VALUES (?, ?, ?)',
-        (session['user_id'], password, strength_score)
-    )
-    
-    # Update progress if completed
-    if is_completed:
-        db.execute(
-            'UPDATE user_progress SET completion_status = 1, score = ? '
-            'WHERE user_id = ? AND module_name = ?',
-            (strength_score, session['user_id'], 'password')
-        )
-    
-    db.commit()
-    return {'status': 'success'}
 
 @app.route('/api/update_phishing_progress', methods=['POST'])
 def update_phishing_progress():
@@ -258,7 +302,17 @@ def update_phishing_progress():
     
     return jsonify({'status': 'success'})
 
+# Health check endpoint for Railway
+@app.route('/health')
+def health_check():
+    return jsonify({'status': 'healthy', 'message': 'Cybersecurity Training Platform is running'})
+
 if __name__ == '__main__':
-    os.makedirs(app.instance_path, exist_ok=True)
+    # Railway-compatible startup
+    port = int(os.environ.get('PORT', 5000))
+    
+    # Initialize database
     init_db()
-    app.run(debug=True)
+    
+    # Run app
+    app.run(host='0.0.0.0', port=port, debug=False)
