@@ -66,9 +66,11 @@ def close_db(error):
         g.db.close()
 
 # Initialize database on first request
-@app.before_first_request
+@app.before_request
 def create_tables():
-    init_db()
+    if not hasattr(app, 'db_initialized'):
+        init_db()
+        app.db_initialized = True
 
 # User authentication routes
 @app.route('/')
